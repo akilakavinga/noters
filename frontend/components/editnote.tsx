@@ -10,17 +10,15 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Plus } from "lucide-react"
 import { Textarea } from "./ui/textarea"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
-export function AddNote() {
+export function EditNote({ note }: { note: Note }) {
     const supabase = createClientComponentClient()
-    const [title, setTitle] = useState('')
-    const [content, setContent] = useState('')
+    const [title, setTitle] = useState(note.title)
+    const [content, setContent] = useState(note.content)
     const [userId, setUserId] = useState('')
     const [open, setOpen] = useState(false)
     const router = useRouter()
@@ -31,28 +29,27 @@ export function AddNote() {
         setUserId(user?.id as string)
     }, [supabase])
 
-    async function handleAdd() {
-        const { error } = await supabase.from('notes').insert(
+    async function handleEdit() {
+        const { error } = await supabase.from('notes').update(
             {
-                user_id: userId,
                 title,
                 content
             }
-        )
+        ).eq('id', note.id)
         setOpen(false)
         router.refresh()
     }
 
     useEffect(() => {
         getUser()
-        setTitle('')
-        setContent('')
+        setTitle(note.title)
+        setContent(note.content)
     }, [supabase])
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="default"><Plus /></Button>
+                <Button variant="ghost" size='sm'>Edit</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -82,7 +79,7 @@ export function AddNote() {
                     </div>
                 </form>
                 <DialogFooter>
-                    <Button type="submit" onClick={handleAdd}>Add Note</Button>
+                    <Button type="submit" onClick={handleEdit}>Edit</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

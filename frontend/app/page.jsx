@@ -3,10 +3,10 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className=" border border-black h-full flex flex-col items-center justify-center">
-      <h1 className="text-4xl">Noters</h1>
+    <div className="  h-full flex flex-col items-center justify-center">
+      <h1 className="text-4xl font-bold">Noters</h1>
       <p>The secure and efficient note-taking application</p>
-      <div>
+      <div className="flex gap-3 mt-5">
         <Button asChild>
           <Link href='auth/login'>Login</Link>
         </Button>
