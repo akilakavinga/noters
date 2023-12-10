@@ -1,22 +1,6 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+from os import getenv
 
-app = FastAPI()
-
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-@app.get('/message')
-def get_message():
-    try:
-        with open('Thanks.txt', 'r') as f:
-            message = f.read()
-        return {"message": message}
-    except:
-        return {"error": "file error"}
+if __name__ == "__main__":
+    port = int(getenv("PORT", 8000))
+    uvicorn.run("app.api:app", host="0.0.0.0", port=port, reload=True)
